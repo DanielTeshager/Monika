@@ -1,34 +1,57 @@
 
-var t = []
-var h = []
-var time = []
+t = []
+h = []
+time = []
 fetch('http://127.0.0.1:5000/')
-.then(response => response.json())
-.then(data => {
-//hide loading
-// document.querySelector('.loader').style.display = 'none';
-// create a card for each item
-    // data.contacts.forEach(item => {
-    //     createCard(item);
-    // });
+        .then(response => response.json())
+        .then(data => {
+            t = data["data"]["temp"]
+            h = data["data"]["humidity"]
+            time = data["data"]["time"]
+            
+            updateSensorCard()
+            drawGraph()
+        })
+        .catch(error => console.log(error)); 
 
-    t = data["data"]["temp"]
-    h = data["data"]["humidity"]
-    time = data["data"]["time"]
-
-   
-})
-.catch(error => console.log(error));
-
-// print the data
-console.log(h);
-console.log(t);
-// ht = h.unshift('Humidity');
-// tt = t.unshift('Temperature');
-console.log(time);
 
 document.addEventListener('DOMContentLoaded', function() {
     console.log(h, t, time);
+   
+
+          // update sensor card
+    });
+
+    // update sensor card
+    function updateSensorCard() {
+        document.querySelector('#hum_value').innerHTML = h[h.length - 1];
+        document.querySelector('#temp_value').innerHTML = t[t.length - 1];
+    }
+    
+
+    //refresh the page
+    setInterval(function() {
+        fetch('http://127.0.0.1:5000/')
+        .then(response => response.json())
+        .then(data => {
+            t = data["data"]["temp"]
+            h = data["data"]["humidity"]
+            time = data["data"]["time"]
+            
+            updateSensorCard()
+            drawGraph()
+        })
+        .catch(error => console.log(error)); 
+    }, 5000);
+
+
+//update divs with data
+function updateDivs() {
+    document.querySelector('#hum_value').innerHTML = h[h.length - 1];
+    document.querySelector('#temp_value').innerHTML = t[t.length - 1];
+}
+
+function drawGraph(){
     var chart = bb.generate({
         data: {
           columns: [
@@ -62,5 +85,4 @@ document.addEventListener('DOMContentLoaded', function() {
           });
       }, 1000);
 
-    }
-    );
+}

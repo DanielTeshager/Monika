@@ -38,7 +38,7 @@ p_time = datetime.strftime(datetime.now(), "%H_%M_%S")
 def index():
   
     ref = db.reference('main_kitchen_chiller/'+p_date+'/')
-    data = ref.order_by_child('H').get()
+    data = ref.get()
     temp = []
     humidity = []
     time = []
