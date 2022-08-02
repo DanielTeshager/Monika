@@ -20,17 +20,18 @@ p_time = datetime.strftime(datetime.now(), "%H_%M_%S")
 # # data = ref.order_by_child('age').get()
 # # print(data)
 
-ref = db.reference('main_kitchen_chiller/'+p_date+'/')
-data = ref.order_by_child('H').get()
+ref = db.reference('main_kitchen_chiller/2022-07-31/')
+data = ref.order_by_key().limit_to_last(1).get()
 temp = []
 humidity = []
 time = []
-for item in data:
-    temp.append(data[item]['T'])
-    humidity.append(data[item]['H'])
-    time.append(item)
+# for item in data:
+#     temp.append(data[item]['T'])
+#     humidity.append(data[item]['H'])
+#     time.append(item)
 
 
-print(temp)
-print(humidity)
-print(time)
+# print(temp)
+# print(humidity)
+# print(time)
+print(data)

@@ -10,10 +10,18 @@
     <link rel="stylesheet" href="/css/style.css">
 </head>
 <body>
-    <h1>Hello</h1>
-    <div id="lineChart"></div>
+ <!-- full screen popup -->
+    <div class="overlay">
+                    <!-- close button -->
+        <span class="btn-close">close</span>
+        <div class="chart-area">
+            <h2 class="chart-title">Change In Temp & Humidity Over Time</h2>
+            <div id="lineChart"></div>
+        </div>
+    </div>
 
-    <div class="sensor_card">
+
+    <div class="sensor-card">
         <div class="temp">
             <h3 id="temp_value">30</h3>
             <h4>°C</h4>
@@ -26,8 +34,9 @@
             <p class="sensor_name">Main Kitchen Chiller</p>
         </div>
     </div>
-
+    <script src="/js/general.js"></script>
     <script src="/js/script.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/apexcharts"></script>
     <script src="https://d3js.org/d3.v5.min.js"></script>
     <script src="/js/billboard.js"></script>
     <script src="/js/chart.js"></script>

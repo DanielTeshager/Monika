@@ -1,88 +1,78 @@
-
-t = []
-h = []
-time = []
-fetch('http://127.0.0.1:5000/')
+// t = []
+// h = []
+// time = []
+//get data from server
+function getData(path='') {
+    fetch('http://127.0.0.1:5000/' + path)
         .then(response => response.json())
         .then(data => {
-            t = data["data"]["temp"]
-            h = data["data"]["humidity"]
-            time = data["data"]["time"]
-            
-            updateSensorCard()
-            drawGraph()
+            console.log(data)
+            t = data["temp"]
+            h = data["humidity"]
+            time = data["time"]
+            if (path == "") {
+                drawGraph()
+                updateSensorCard(h[h.length-1], t[t.length-1])
+            }
+            else{
+               updateSensorCard(h, t)
+            }
+            // drawGraph()
         })
         .catch(error => console.log(error)); 
+}
 
+// update sensor card
+function updateSensorCard(h, t) {
+    document.querySelector('#hum_value').innerHTML = h
+    document.querySelector('#temp_value').innerHTML = t
+}
 
 document.addEventListener('DOMContentLoaded', function() {
-    console.log(h, t, time);
-   
-
-          // update sensor card
-    });
-
-    // update sensor card
-    function updateSensorCard() {
-        document.querySelector('#hum_value').innerHTML = h[h.length - 1];
-        document.querySelector('#temp_value').innerHTML = t[t.length - 1];
-    }
-    
-
-    //refresh the page
-    setInterval(function() {
-        fetch('http://127.0.0.1:5000/')
-        .then(response => response.json())
-        .then(data => {
-            t = data["data"]["temp"]
-            h = data["data"]["humidity"]
-            time = data["data"]["time"]
-            
-            updateSensorCard()
-            drawGraph()
-        })
-        .catch(error => console.log(error)); 
-    }, 5000);
+    //get data from server
+    getData('')
+    //update divs with data
+ });
 
 
-//update divs with data
-function updateDivs() {
-    document.querySelector('#hum_value').innerHTML = h[h.length - 1];
-    document.querySelector('#temp_value').innerHTML = t[t.length - 1];
-}
+//refresh the page
+setInterval(function() {
+    getData('/current_temp_humidity')
+    // drawGraph()
+}, 5000);
 
+
+//update graph
 function drawGraph(){
-    var chart = bb.generate({
-        data: {
-          columns: [
-         t,
-          h
-          ],
-          type: "line", // for ESM specify as: line()
+ 
+
+    var options = {
+        chart: {
+          height: 380,
+          width: "100%",
+          type: "line"
         },
-        bindto: "#lineChart"
-      });
+        series: [
+          {
+            name: "Temperature",
+            data: t
+          },
+            {
+            name: "Humidity",
+            data: h
+          }
+        ],
+        xaxis: {
+          categories: time
+        }
+      };
       
-      setTimeout(function() {
-          chart.load({
-              columns: [
-                t
-              ]
-          });
-      }, 1000);
+      var chart = new ApexCharts(document.querySelector("#lineChart"), options);
       
-      setTimeout(function() {
-          chart.load({
-              columns: [
-                    h
-              ]
-          });
-      }, 1500);
-      
-      setTimeout(function() {
-          chart.unload({
-              ids: "Temperature"
-          });
-      }, 1000);
+      chart.render();
 
 }
+
+
+
+  
