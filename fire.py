@@ -20,18 +20,12 @@ p_time = datetime.strftime(datetime.now(), "%H_%M_%S")
 # # data = ref.order_by_child('age').get()
 # # print(data)
 
-ref = db.reference('main_kitchen_chiller/2022-07-31/')
-data = ref.order_by_key().limit_to_last(1).get()
-temp = []
-humidity = []
-time = []
-# for item in data:
-#     temp.append(data[item]['T'])
-#     humidity.append(data[item]['H'])
-#     time.append(item)
-
-
-# print(temp)
-# print(humidity)
-# print(time)
+ref = db.reference('/')
+sensors = list(ref.order_by_key().get().keys())
+data = []
+for sensor in sensors:
+    current_date = list(ref.child(sensor).order_by_key().limit_to_last(1).get().keys())[0]
+    #get last temp and humidity reading for each sensor
+    last_temp_humidity = ref.child(sensor).child(current_date).order_by_key().limit_to_last(1).get()
+    data.append({sensor: dict(last_temp_humidity)})
 print(data)

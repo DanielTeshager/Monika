@@ -55,15 +55,17 @@ def index():
 #return the laste temperature and humidity reading from the database
 @app.route('/current_temp_humidity')
 def current_temp_humidity():
-    # ref = db.reference('main_kitchen_chiller/'+p_date+'/')
-    ref = db.reference('main_kitchen_chiller/2022-07-31/')
-    data = ref.order_by_key().limit_to_last(1).get()
-
-    #convert the odict to a list
-    data_dict = list(data.values())[0]
-    print(data_dict)
-    d = {'temp': data_dict['T'], 'humidity': data_dict['H'], 'time': list(data.keys())[0]}
-    return jsonify(d)
+    ref = db.reference('/')
+    sensors = list(ref.order_by_key().get().keys())
+    data = []
+    for sensor in sensors:
+        #get the last date
+        current_date = list(ref.child(sensor).order_by_key().limit_to_last(1).get().keys())[0]
+        #get last temp and humidity reading for each sensor
+        last_temp_humidity = ref.child(sensor).child(current_date).order_by_key().limit_to_last(1).get()
+        data.append({sensor: dict(last_temp_humidity)})
+    # d = {'temp': data_dict['T'], 'humidity': data_dict['H'], 'time': list(data.keys())[0]}
+    return jsonify(data)
 
 # Handles the page note found error
 @app.errorhandler(404)
